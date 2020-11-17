@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<!-- 공통 header (css) -->
+<th:block th:replace="fragments/head :: headFragment"></th:block>
+<body id="page-top">
+    <div id="wrapper">
+        <!-- 공통 leaf -->
+        <th:block th:replace="fragments/sidebar :: sidebarFragments"></th:block>
+
+        <div id="content-wrapper">
+            <div id="content" class="container-fluid">
+                <!-- 공통 topbar -->
+                <th:block th:replace="fragments/topbar :: topbarFragemnt"></th:block>
+                <!-- 본문 content(실제 컨텐츠 영역 -->
+                <th:block layout:fragment="content"></th:block>
+            </div>
+            <!-- 공통 footer -->
+            <th:block th:replace="fragments/footer :: footerFragment"></th:block>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="login.html">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 공통 script -->
+    <th:block th:replace="fragments/script :: scriptFragment"></th:block>
+
+    <!-- 각 페이지의 script -->
+    <th:block layout:fragment="script"></th:block>
+</body>
+</html>

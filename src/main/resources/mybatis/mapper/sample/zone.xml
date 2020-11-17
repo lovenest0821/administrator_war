@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kiwoom.administrator.sample.mapper.KfdMapper">
+    <select id="getZone" parameterType="String" resultType="String">
+        SELECT LOCAL_NAME_OF_CITY
+          FROM ZONE
+         WHERE CITY = #{city}
+    </select>
+</mapper>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>키움증권 관리자 로그인</title>
+
+    <!-- Custom fonts for this template-->
+    <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css" type="text/css" />
+
+    <!-- Custom styles for this template-->
+    <link rel="stylesheet" href="/css/sb-admin.css" />
+</head>
+<body class="bg-dark">
+    <div class="container">
+        <div class="card card-login mx-auto mt-5">
+            <div class="card-header">키움증권 관리자 로그인</div>
+            <div class="card-body">
+                <form name="loginForm" class="needs-validation" id="loginForm"
+                      th:action="@{/login}" method="post" novalidate>
+                    <div th:if="${param.error}" th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}"
+                         class="alert alert-danger" role="alert">
+                        <span th:text="${errorMsg}"></span>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="email" name="username" id="username" class="form-control"
+                                   placeholder="Email address" autofocus="autofocus" aria-describedby="emailHelp" required/>
+                            <label for="username">Email address</label>
+                            <small id="emailHelp" class="form-text text-muted">내부망 이메일을 입력하세요.</small>
+                            <small class="invalid-feedback">이메일을 입력하세요.</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="password" name="password" id="password" class="form-control"
+                                   placeholder="Password" aria-describedby="passwordHelp" required/>
+                            <label for="password">Password</label>
+                            <small id="passwordHelp" class="form-text text-muted">
+                                유효기간(3개월) 만료 혹은 5회 오류 시,
+                                <a th:href="@{/password-init}">패스워스 초기화 하기</a>
+                            </small>
+                            <small class="invalid-feedback">패스워드를 입력하세요.</small>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-block" type="submit">로그인</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="/node_modules/jquery.easing/jquery.easing.min.js"></script>
+    <script type="application/javascript">
+        (function() {
+            'use strict';
+
+            window.addEventListener('load', function() {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+
+                // Loop over them and prevent submission
+                Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false)
+                })
+            }, false)
+        }())
+    </script>
+</body>
+</html>
