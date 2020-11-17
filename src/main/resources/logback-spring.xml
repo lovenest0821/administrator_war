@@ -22,10 +22,10 @@
         </rollingPolicy>
     </appender>
 
-    <logger name="com.kiwoom.administrator.config.security.CustomAuthenticationProvider" level="INFO">
+    <logger name="org.greenearth.administrator.config.security.CustomAuthenticationProvider" level="INFO">
         <appender-ref ref="DAILY_ROLLING_FILE_APPENDER" />
     </logger>
-    <logger name="com.kiwoom.administrator.account.service.AccountService" level="INFO">
+    <logger name="org.greenearth.administrator.account.service.AccountService" level="INFO">
         <appender-ref ref="DAILY_ROLLING_FILE_APPENDER" />
     </logger>
     <root level="INFO">
