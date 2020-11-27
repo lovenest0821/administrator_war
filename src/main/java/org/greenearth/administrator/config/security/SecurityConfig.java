@@ -69,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * 1. filter.1setAuthenticationManager(authentcationManager()) 를 선언해주는 이유
+     * 1. filter.setAuthenticationManager(authentcationManager()) 를 선언해주는 이유
      * - 위 내용을 추가해 주지 않을 경우 authenticationManager가 등록되지 않아 인증이 정상적으로 동작하지 않는다.
      * 2. 상단의 http.formLogin()에 successHandler(), failureHandler() 설정시 정상 동장하지 않는다.
      * 대신에 customUsernamePasswordAuthenticationFilter() 에 setAuthenticationFailureHandler() 와
