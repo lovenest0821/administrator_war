@@ -12,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -36,7 +37,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.addFilterBefore(customUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(customUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(customSessionRepositoryFilter(), SecurityContextPersistenceFilter.class)
+        ;
 
         http.authorizeRequests()
                 .mvcMatchers("/", "/login", "/password-init", "/email-by-passwordInit").permitAll()
@@ -54,6 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .maximumSessions(1)
+                .maxSessionsPreventsLogin(true)
         ;
 
         http.exceptionHandling().accessDeniedPage("/login");
@@ -93,5 +97,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return new CustomAuthenticationSuccessHandler();
+    }
+
+    @Bean
+    public CustomSessionRepositoryFilter customSessionRepositoryFilter() {
+        return new CustomSessionRepositoryFilter();
     }
 }
