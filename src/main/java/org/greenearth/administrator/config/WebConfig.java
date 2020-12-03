@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final CertificationInterceptor certificationInterceptor;
 
-    // Interceptor 추가시 제외될 URI 패턴 등록도 같이 등록을 해줘야 302 응답코드를 안 볼 수 있다.
+    // Interceptor 추가시 제외될 URI 패턴 등록도 같이 해야 302 응답코드를 안 볼 수 있다.
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(certificationInterceptor)
