@@ -61,6 +61,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         ;
 
         http.exceptionHandling().accessDeniedPage("/login");
+
+        /*
+         * clicking Hijacking Attack 보안이슈로 기본적으로 X-Frame-Options 기본설정은 DENY 로 되어 있다.
+         * deny() 설정 할 경우 <frame> <iframe> <embed> 를 사용할 수 없다.
+         * sameOrigin() 설정 할 경우 같은 도메인에서만 사용 가능하다.
+         * disable() 설정 할 경우 X-Frame-Options 를 제한없이 사용 가능하다.
+         * 위의 세가지 방법으로 기본 설정 후 addHeaderWriter()를 사용하여 WhiteList 방식으로 추가할 수 있다.
+         */
+        http.headers().frameOptions().sameOrigin();
     }
 
     @Override
@@ -69,13 +78,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * 1. filter.setAuthenticationManager(authentcationManager()) 를 선언해주는 이유
-     * - 위 내용을 추가해 주지 않을 경우 authenticationManager가 등록되지 않아 인증이 정상적으로 동작하지 않는다.
+     * 1. filter.setAuthenticationManager(authenticationManager()) 를 선언해주는 이유
+     * - 위 내용을 추가해 주지 않을 경우 authenticationManager 가 등록되지 않아 인증이 정상적으로 동작하지 않는다.
      * 2. 상단의 http.formLogin()에 successHandler(), failureHandler() 설정시 정상 동장하지 않는다.
      * 대신에 customUsernamePasswordAuthenticationFilter() 에 setAuthenticationFailureHandler() 와
      * setAuthenticationSuccessHandler()를 설정해 주면 정상 동작한다.
      * filter.setAuthenticationFailureHandler() 를 설정해 주는 이유
-     * UsernamePasswordAuthenticationFilter 를 상속 받아 일부 method 만 수정하여 filter를 기존 필터를 사이에 넣었지만
+     * UsernamePasswordAuthenticationFilter 를 상속 받아 일부 method 만 수정하여 filter 를 기존 필터들 사이에 넣었지만
      * 로그인 실패시 에러 메시지가 화면에 출력되지 않는 현상 발견.
      * 원인 : SimpleUrlAuthenticationFailureHandler.class 의 onAuthenticationFailure() method 에서
      * defaultUrl 이 null 로 설정되어 있어 redirect 안되어 발생하는 현상.
