@@ -11,6 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+/**
+  * Redis 와 같은 Memory DB로 세션을 관리할 경우 기본적으로 Set 설정으로 되어 있다.
+  * Set 으로 설정 되어 있을 경우, SecurityContext 가 setter 에 의해 동기화 되지 않는다.
+  * Tomcat 의 경우 Heap 영역 안에 SecurityContext 가 존재하기 때문에 동기화가 되지만,
+  * Memory DB 의 경우. 반드시, setAttribute 를 사용하여 SecurityContext 를 업데이트 해 주어야 한다.
+  * SecurityConfig 의 .addFilterAfter(customSessionRepositoryFilter(), SecurityContextPersistenceFilter.class) 추가
+  */
 public class CustomSessionRepositoryFilter extends GenericFilterBean {
 
     @Override
