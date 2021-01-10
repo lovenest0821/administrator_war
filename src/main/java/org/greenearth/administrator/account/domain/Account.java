@@ -69,6 +69,7 @@ public class Account {
         }
         account.setRegisterAt(LocalDateTime.now());
         account.setUpdateAt(LocalDateTime.now());
+        account.setPasswordChangeAt(LocalDateTime.now());
 
         return account;
     }
