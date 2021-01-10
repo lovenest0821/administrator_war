@@ -3,7 +3,6 @@ package org.greenearth.administrator.config.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -37,6 +36,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        /*
+        * SecurityContextPersistenceFilter.class 후에 CustomSessionRepositoryFilter() 를 추가한 이유
+        * Redis 와 같은 Memory DB로 세션을 관리할 경우 기본적으로 Set 설정으로 되어 있다.
+        * Set 으로 설정 되어 있을 경우, SecurityContext 가 setter 에 의해 동기화 되지 않는다.
+        * Tomcat 의 경우 Heap 영역 안에 SecurityContext 가 존재하기 때문에 동기화가 되지만,
+        * Memory DB 의 경우. 반드시, setAttribute 를 사용하여 SecurityContext 를 업데이트 해 주어야 한다.
+        * SecurityConfig 의 .addFilterAfter(customSessionRepositoryFilter(), SecurityContextPersistenceFilter.class) 추가
+        * */
         http.addFilterBefore(customUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             .addFilterAfter(customSessionRepositoryFilter(), SecurityContextPersistenceFilter.class)
         ;
@@ -62,6 +69,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.exceptionHandling().accessDeniedPage("/login");
 
+        http.authenticationProvider(customAuthenticationProvider);
+
         /*
          * clicking Hijacking Attack 보안이슈로 기본적으로 X-Frame-Options 기본설정은 DENY 로 되어 있다.
          * deny() 설정 할 경우 <frame> <iframe> <embed> 를 사용할 수 없다.
@@ -70,11 +79,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          * 위의 세가지 방법으로 기본 설정 후 addHeaderWriter()를 사용하여 WhiteList 방식으로 추가할 수 있다.
          */
         http.headers().frameOptions().sameOrigin();
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(customAuthenticationProvider);
     }
 
     /**
