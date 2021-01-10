@@ -1,10 +1,10 @@
 package org.greenearth.administrator.account;
 
+import lombok.RequiredArgsConstructor;
 import org.greenearth.administrator.account.domain.Account;
 import org.greenearth.administrator.account.domain.PasswordChangeForm;
 import org.greenearth.administrator.account.service.AccountService;
 import org.greenearth.administrator.account.validator.PasswordChangeValidator;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
