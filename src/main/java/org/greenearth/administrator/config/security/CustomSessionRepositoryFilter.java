@@ -1,7 +1,5 @@
 package org.greenearth.administrator.config.security;
 
-import org.greenearth.administrator.account.UserAccount;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.filter.GenericFilterBean;
