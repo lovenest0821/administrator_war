@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.jndi.JndiObjectFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -76,7 +77,7 @@ public class KwsvcDatabaseConfig extends HikariConfig {
 
     @Bean(name = "kwsvcTransactionManager")
     @Primary
-    public PlatformTransactionManager transactionManager(@Qualifier("kwsvcEntityManagerFactory")
+    public JpaTransactionManager transactionManager(@Qualifier("kwsvcEntityManagerFactory")
                                                                      EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactory);
@@ -102,5 +103,10 @@ public class KwsvcDatabaseConfig extends HikariConfig {
     public SqlSessionTemplate kwsvcSqlSessionTemplate(@Qualifier("kwsvcSessionFactory")
                                                                   SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
+    }
+
+    @Bean(name = "kwsvcMybatisTransactionManager")
+    public DataSourceTransactionManager transactionManager(@Qualifier("kwsvcDataSource") DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
     }
 }
