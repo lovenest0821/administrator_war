@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.transaction.ChainedTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.jndi.JndiObjectFactoryBean;
@@ -75,7 +76,7 @@ public class KwsvcDatabaseConfig extends HikariConfig {
         return factoryBean.getObject();
     }
 
-    @Bean(name = "kwsvcTransactionManager")
+    @Bean(name = "kwsvcJpaTransactionManager")
     @Primary
     public JpaTransactionManager transactionManager(@Qualifier("kwsvcEntityManagerFactory")
                                                                      EntityManagerFactory entityManagerFactory) {
@@ -108,5 +109,13 @@ public class KwsvcDatabaseConfig extends HikariConfig {
     @Bean(name = "kwsvcMybatisTransactionManager")
     public DataSourceTransactionManager transactionManager(@Qualifier("kwsvcDataSource") DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
+    }
+
+    /*---------------------------------------------Transaction 설정----------------------------------------------------*/
+    @Bean(name="kfdTransactionManager")
+    public ChainedTransactionManager transactionManager(
+            @Qualifier("kwsvcJpaTransactionManager")PlatformTransactionManager jpaTransactionManager,
+            @Qualifier("kwsvcMybatisTransactionManager") PlatformTransactionManager myBatisTransactionManager) {
+        return new ChainedTransactionManager(jpaTransactionManager, myBatisTransactionManager);
     }
 }

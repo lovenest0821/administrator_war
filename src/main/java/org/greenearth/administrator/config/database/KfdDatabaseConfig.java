@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.transaction.ChainedTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.jndi.JndiObjectFactoryBean;
@@ -17,6 +18,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
@@ -70,7 +72,7 @@ public class KfdDatabaseConfig {
         return factoryBean.getObject();
     }
 
-    @Bean(name = "kfdTransactionManager")
+    @Bean(name = "kfdJpaTransactionManager")
     public JpaTransactionManager transactionManager(@Qualifier("kfdEntityManagerFactory")
                                                                  EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
@@ -100,5 +102,13 @@ public class KfdDatabaseConfig {
     @Bean(name = "kfdMybatisTransactionManager")
     public DataSourceTransactionManager transactionManager(@Qualifier("kfdDataSource") DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
+    }
+
+    /*---------------------------------------------Transaction 설정----------------------------------------------------*/
+    @Bean(name="kfdTransactionManager")
+    public ChainedTransactionManager transactionManager(
+            @Qualifier("kfdJpaTransactionManager")PlatformTransactionManager jpaTransactionManager,
+            @Qualifier("kfdMybatisTransactionManager") PlatformTransactionManager myBatisTransactionManager) {
+        return new ChainedTransactionManager(jpaTransactionManager, myBatisTransactionManager);
     }
 }
