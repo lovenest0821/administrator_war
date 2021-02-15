@@ -112,7 +112,7 @@ public class KwsvcDatabaseConfig extends HikariConfig {
     }
 
     /*---------------------------------------------Transaction 설정----------------------------------------------------*/
-    @Bean(name="kfdTransactionManager")
+    @Bean(name="kwsvcTransactionManager")
     public ChainedTransactionManager transactionManager(
             @Qualifier("kwsvcJpaTransactionManager")PlatformTransactionManager jpaTransactionManager,
             @Qualifier("kwsvcMybatisTransactionManager") PlatformTransactionManager myBatisTransactionManager) {
