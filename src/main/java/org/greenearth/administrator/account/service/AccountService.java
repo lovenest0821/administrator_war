@@ -142,6 +142,7 @@ public class AccountService implements UserDetailsService {
         AccountRole[] accountRoles = new AccountRole[count];
         Department department = new Department();
 
+        joinAccount.setPassword(passwordEncoder.encode(joinAccount.getPassword()));
         for(int i=0; i < count; i++) {
             Optional<Role> roleOptional = roleRepository.findById(joinAccount.getRoleIds().get(i));
             if(roleOptional.isPresent()) {
