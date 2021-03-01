@@ -8,6 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -56,6 +57,9 @@ public class Account {
     @JoinColumn(name = "DEPT_NO")
     private Department department;
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<PasswordHistory> passwordHistory;
+
     // 생성자 메서드
     public static Account createAccount(JoinAccount joinAccount, Department department, AccountRole... accountRoles) {
         Account account = new Account();
@@ -69,6 +73,7 @@ public class Account {
         account.setRegisterAt(LocalDateTime.now());
         account.setUpdateAt(LocalDateTime.now());
         account.setPasswordChangeAt(LocalDateTime.now());
+        account.setPasswordHistory(Collections.singletonList(PasswordHistory.createPasswordHistory(account)));
 
         return account;
     }
