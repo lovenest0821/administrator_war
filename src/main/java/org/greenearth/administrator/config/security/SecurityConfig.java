@@ -2,6 +2,7 @@ package org.greenearth.administrator.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -11,6 +12,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -48,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         ;
 
         http.authorizeRequests()
-                .mvcMatchers("/", "/login", "/password-init", "/email-by-passwordInit").permitAll()
+                .mvcMatchers("/", "/login", "/password-init", "/email-by-passwordInit", "/uploadEx", "/uploadAjax").permitAll()
                 .mvcMatchers("/chk/**").hasRole("CHK")
                 .mvcMatchers("/kdream/**").hasRole("KDRM")
                 .mvcMatchers("/edu/**").hasRole("EDU")
@@ -58,6 +60,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.formLogin()
                 .loginPage("/login").permitAll()
+        ;
+
+        http.logout()
+                .logoutSuccessUrl("/login")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .clearAuthentication(true)
         ;
 
         http.exceptionHandling().accessDeniedPage("/login");
@@ -108,5 +117,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CustomSessionRepositoryFilter customSessionRepositoryFilter() {
         return new CustomSessionRepositoryFilter();
+    }
+
+    /**
+     * Logout의 invalidateHttpSession 이 정상동작하지 않아 로그인이 불가한 현상이 발생함.
+     * HttpSessionEventPublisher 는 session clustering 환경에서 Spring Security 가 전달받게 하기 위해 필요함
+     */
+    @Bean
+    public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisherServletListenerRegistrationBean() {
+        return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
     }
 }
