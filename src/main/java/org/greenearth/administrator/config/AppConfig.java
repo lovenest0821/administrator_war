@@ -10,21 +10,19 @@ import org.greenearth.administrator.account.repositories.EconomyWordRepository;
 import org.greenearth.administrator.account.repositories.RoleRepository;
 import org.greenearth.administrator.account.service.AccountService;
 import org.greenearth.administrator.account.service.DepartmentService;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 @Configuration
 public class AppConfig {
@@ -32,6 +30,20 @@ public class AppConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
+    public FilterRegistrationBean<CorsFilter> corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
+        bean.setOrder(0);
+        return bean;
     }
 
     @Bean
@@ -68,7 +80,7 @@ public class AppConfig {
 
                 JoinAccount joinAccount = JoinAccount.builder()
                         .email("becho08@gmail.com")
-                        .password(passwordEncoder().encode("pentium1"))
+                        .password("pentium1")
                         .userName("조병은")
                         .deptId(1L)
                         .userIp("127.0.0.1")
@@ -76,13 +88,13 @@ public class AppConfig {
                         .build();
 
                 accountService.createAccount(joinAccount);
-
-                Resource resource = new ClassPathResource("economyWord_200424.xls");
-                HSSFWorkbook workbook = new HSSFWorkbook(Files.newInputStream(Paths.get(resource.getFile().getPath())));
-                HSSFSheet sheetAt = workbook.getSheetAt(0);
 /*
+                Resource resource = new ClassPathResource("economyWord_20210203.xlsx");
+                XSSFWorkbook workbook = new XSSFWorkbook(Files.newInputStream(Paths.get(resource.getFile().getPath())));
+                XSSFSheet sheetAt = workbook.getSheetAt(0);
+
                 for (int i = 1; i < sheetAt.getPhysicalNumberOfRows(); i++){
-                    HSSFRow row = sheetAt.getRow(i);
+                    XSSFRow row = sheetAt.getRow(i);
 
                     EconomyWord economyWord = EconomyWord.builder()
                             .id(Long.parseLong(row.getCell(0).getStringCellValue().trim()))
